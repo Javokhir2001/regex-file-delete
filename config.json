@@ -1,0 +1,6 @@
+{
+  "API_KEY": "test",
+  "REGEX_INCLUDE": true,
+  "BASE_URL": "https://gitlab.com/api/v4/projects/wrbbz%2Fpackage-cleaner/repository/tree",
+  "REGEX_STATEMENT": "^i.*"
+}
