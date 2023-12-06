@@ -1,6 +1,7 @@
 import re
 import requests
 import json
+import os
 
 def load_config(): #load values from config file
     with open("config.json") as json_data_file:
@@ -8,8 +9,16 @@ def load_config(): #load values from config file
     return data
 
 def get_packages(base_url): #gets repo content
-    response = requests.get(base_url)
-    return response.json()
+    try:
+        response = requests.get(base_url)
+    except Exception:
+        print("Faced an error while sending GET request to git repo")
+        exit()
+    else:
+        if response.status_code > 400:
+            print("Page not found, please check your repo link")
+            exit()
+        return response.json()
 
 def filter_packages(regex_statement, include, base_url):
     packages = get_packages(base_url)
@@ -24,6 +33,10 @@ def filter_packages(regex_statement, include, base_url):
                 print(f"Package '{package_name}' will be removed.")
 
 if __name__ == '__main__':
+    
+    null_device = 'nul' if os.name == 'nt' else '/dev/null'
+    py_command = 'python -m' if os.name == 'nt' else 'python3 -m'
+    os.system(f"{py_command} pip install -r requirements.txt > {null_device}") #install requirements modules
     params = load_config()
     regex_statement = params["REGEX_STATEMENT"] # store values retrieved from config file to variables
     regex_include = params["REGEX_INCLUDE"]
